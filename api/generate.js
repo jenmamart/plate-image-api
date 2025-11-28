@@ -20,7 +20,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Use a lighter model: stable-diffusion with img2img
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -28,14 +27,14 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf", // SDXL img2img
+        version: "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
         input: {
           image: image,
           prompt: prompt,
-          strength: 0.5,
+          strength: 0.3, // Lower strength = more preservation of original
           num_outputs: 1,
           guidance_scale: 7.5,
-          num_inference_steps: 25
+          num_inference_steps: 30
         }
       })
     });
@@ -47,7 +46,6 @@ export default async function handler(req, res) {
 
     const prediction = await response.json();
     
-    // Poll for completion
     let result = prediction;
     let attempts = 0;
     while ((result.status === 'starting' || result.status === 'processing') && attempts < 60) {
