@@ -13,7 +13,8 @@ export default async function handler(req, res) {
 
   try {
       console.log("Request body:", req.body);
-  console.log("Step received:", req.body?.step);
+      console.log("Step received:", req.body?.step);
+    
     const { step, image, prompt, predictionId } = req.body;
     const removeBgKey = process.env.REMOVEBG_API_KEY;
     const replicateToken = process.env.REPLICATE_API_TOKEN;
