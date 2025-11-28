@@ -55,7 +55,7 @@
       const API_URL = 'https://plate-image-api.vercel.app/api/generate';
 
       const [basePrompt, setBasePrompt] = useState(
-        `A cozy winter lifestyle photograph featuring a ceramic snack plate as the centerpiece. The scene includes soft candlelight, a warm tea mug, knit blankets, and a hygge atmosphere. The plate is beautifully styled with artisanal snacks. Warm, inviting lighting with a shallow depth of field. Professional product photography style, high-end Etsy aesthetic.`
+        `A cozy winter lifestyle photograph featuring a ceramic snack plate. The scene includes soft candlelight, warm tea mug, knit blankets, and hygge atmosphere. The plate is beautifully styled with artisanal snacks like fruit, chocolate, cheese, and crackers. Warm inviting lighting, shallow depth of field, professional product photography, high-end Etsy aesthetic.`
       );
 
       const [options, setOptions] = useState({
@@ -65,37 +65,31 @@
       });
 
       const lightingOptions = [
-        { value: 'morning', label: 'Morning Light', desc: 'Soft natural daylight, fresh and bright' },
-        { value: 'candlelit-evening', label: 'Candlelit Evening', desc: 'Warm amber glow, intimate' },
-        { value: 'golden-hour', label: 'Golden Hour', desc: 'Rich warm sunset tones' },
-        { value: 'overcast', label: 'Soft Overcast', desc: 'Diffused, even lighting' }
+        { value: 'morning', label: 'Morning Light', desc: 'soft natural daylight, fresh and bright' },
+        { value: 'candlelit-evening', label: 'Candlelit Evening', desc: 'warm amber glow, intimate candlelight' },
+        { value: 'golden-hour', label: 'Golden Hour', desc: 'rich warm sunset tones' },
+        { value: 'overcast', label: 'Soft Overcast', desc: 'diffused even lighting' }
       ];
 
       const densityOptions = [
-        { value: 'minimal', label: 'Minimal', desc: 'Clean, few props' },
-        { value: 'moderate', label: 'Moderate', desc: 'Balanced styling' },
-        { value: 'abundant', label: 'Abundant', desc: 'Rich, layered scene' }
+        { value: 'minimal', label: 'Minimal', desc: 'clean minimal styling, few props' },
+        { value: 'moderate', label: 'Moderate', desc: 'balanced styling with some props' },
+        { value: 'abundant', label: 'Abundant', desc: 'rich layered scene, many cozy elements' }
       ];
 
       const foodOptions = [
-        { value: 'fruit-cheese', label: 'Fruit & Cheese', desc: 'Grapes, berries, brie, crackers' },
-        { value: 'chocolate', label: 'Chocolate & Sweets', desc: 'Truffles, cookies, berries' },
-        { value: 'charcuterie', label: 'Charcuterie', desc: 'Meats, olives, nuts, cheese' },
-        { value: 'mixed', label: 'Mixed Snacks', desc: 'Variety of sweet and savory' }
+        { value: 'fruit-cheese', label: 'Fruit & Cheese', desc: 'grapes, berries, brie, crackers' },
+        { value: 'chocolate', label: 'Chocolate & Sweets', desc: 'truffles, cookies, chocolate, berries' },
+        { value: 'charcuterie', label: 'Charcuterie', desc: 'meats, olives, nuts, cheese' },
+        { value: 'mixed', label: 'Mixed Snacks', desc: 'variety of sweet and savory treats' }
       ];
 
-      const buildFullPrompt = (plateDescription) => {
+      const buildFullPrompt = () => {
         const lightingDesc = lightingOptions.find(o => o.value === options.lighting)?.desc || '';
         const densityDesc = densityOptions.find(o => o.value === options.density)?.desc || '';
         const foodDesc = foodOptions.find(o => o.value === options.foods)?.desc || '';
 
-        return `${basePrompt}
-
-Lighting: ${lightingDesc}
-Styling density: ${densityDesc}
-Food styling: ${foodDesc}
-
-The ceramic plate in the scene: ${plateDescription}`;
+        return `${basePrompt} Lighting: ${lightingDesc}. Styling: ${densityDesc}. Foods on plate: ${foodDesc}.`;
       };
 
       const handleImageUpload = (e) => {
@@ -120,41 +114,22 @@ The ceramic plate in the scene: ${plateDescription}`;
         setGeneratedImage(null);
 
         try {
-          // Step 1: Analyze plate
-          const analyzeResponse = await fetch(API_URL, {
+          const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              step: 'analyze',
-              image: uploadedImage
+              image: uploadedImage,
+              prompt: buildFullPrompt()
             })
           });
 
-          if (!analyzeResponse.ok) {
-            const errData = await analyzeResponse.json().catch(() => ({}));
-            throw new Error(errData.error || `Analysis failed: ${analyzeResponse.status}`);
+          if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error || `Generation failed: ${response.status}`);
           }
 
-          const analyzeData = await analyzeResponse.json();
-          const plateDescription = analyzeData.description || 'ceramic artisan plate';
-
-          // Step 2: Generate image
-          const generateResponse = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              step: 'generate',
-              prompt: buildFullPrompt(plateDescription)
-            })
-          });
-
-          if (!generateResponse.ok) {
-            const errData = await generateResponse.json().catch(() => ({}));
-            throw new Error(errData.error || `Generation failed: ${generateResponse.status}`);
-          }
-
-          const generateData = await generateResponse.json();
-          setGeneratedImage(generateData.imageUrl);
+          const data = await response.json();
+          setGeneratedImage(data.imageUrl);
         } catch (err) {
           setError(err.message || 'Failed to generate image');
         } finally {
@@ -205,7 +180,7 @@ The ceramic plate in the scene: ${plateDescription}`;
                   {loading ? (
                     <div className="text-amber-600">
                       <div className="w-8 h-8 mx-auto mb-2"><Loader2 /></div>
-                      <p className="text-sm">Generating...</p>
+                      <p className="text-sm">Generating... (30-60s)</p>
                     </div>
                   ) : generatedImage ? (
                     <img src={generatedImage} alt="Generated" className="max-h-48 mx-auto rounded" />
@@ -287,7 +262,7 @@ The ceramic plate in the scene: ${plateDescription}`;
             </button>
 
             <p className="text-xs text-stone-400 text-center mt-3">
-              Powered by your Vercel API + GPT-4 Vision + DALL-E 3
+              Powered by Replicate + Stable Diffusion XL
             </p>
           </div>
         </div>
