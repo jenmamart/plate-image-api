@@ -11,56 +11,46 @@
 </head>
 <body>
   <div id="root"></div>
-
   <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
-    // Lucide icons as inline SVGs
     const Upload = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
     );
-
     const Image = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
     );
-
     const Download = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
     );
-
     const Loader2 = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     );
-
     const Settings = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
     );
-
     const Sparkles = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
     );
-
     const X = () => (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     );
 
-    const DEFAULT_PROMPT = `A cozy winter lifestyle photograph featuring a ceramic snack plate. The scene includes soft candlelight, warm tea mug, knit blankets, and hygge atmosphere. The plate is beautifully styled with artisanal snacks. Warm inviting lighting, shallow depth of field, professional Etsy aesthetic.`;
+    const DEFAULT_PROMPT = "A cozy winter lifestyle photograph featuring a ceramic snack plate. The scene includes soft candlelight, warm tea mug, knit blankets, and hygge atmosphere. The plate is beautifully styled with artisanal snacks. Warm inviting lighting, shallow depth of field, professional Etsy aesthetic.";
 
     function PlateImageGenerator() {
       const [uploadedImage, setUploadedImage] = useState(null);
       const [generatedImage, setGeneratedImage] = useState(null);
       const [loading, setLoading] = useState(false);
-      const [loadingStep, setLoadingStep] = useState('');
-      const [error, setError] = useState('');
+      const [loadingStep, setLoadingStep] = useState("");
+      const [error, setError] = useState("");
       const [showSettings, setShowSettings] = useState(false);
       const fileInputRef = useRef(null);
-      const canvasRef = useRef(null);
-
-      const API_URL = 'https://plate-image-api.vercel.app/api/generate';
+      const API_URL = "https://plate-image-api.vercel.app/api/generate";
 
       const [basePrompt, setBasePrompt] = useState(() => {
         try {
-          const saved = localStorage.getItem('plateGeneratorPrompt');
+          const saved = localStorage.getItem("plateGeneratorPrompt");
           return saved || DEFAULT_PROMPT;
         } catch {
           return DEFAULT_PROMPT;
@@ -69,44 +59,43 @@
 
       useEffect(() => {
         try {
-          localStorage.setItem('plateGeneratorPrompt', basePrompt);
+          localStorage.setItem("plateGeneratorPrompt", basePrompt);
         } catch (e) {
-          console.error('Failed to save prompt:', e);
+          console.error("Failed to save prompt:", e);
         }
       }, [basePrompt]);
 
       const [options, setOptions] = useState({
-        lighting: 'candlelit-evening',
-        density: 'abundant',
-        foods: 'mixed'
+        lighting: "candlelit-evening",
+        density: "abundant",
+        foods: "mixed"
       });
 
       const lightingOptions = [
-        { value: 'morning', label: 'Morning Light', desc: 'soft natural daylight, fresh and bright' },
-        { value: 'candlelit-evening', label: 'Candlelit Evening', desc: 'warm amber glow, intimate candlelight' },
-        { value: 'golden-hour', label: 'Golden Hour', desc: 'rich warm sunset tones' },
-        { value: 'overcast', label: 'Soft Overcast', desc: 'diffused even lighting' }
+        { value: "morning", label: "Morning Light", desc: "soft natural daylight, fresh and bright" },
+        { value: "candlelit-evening", label: "Candlelit Evening", desc: "warm amber glow, intimate candlelight" },
+        { value: "golden-hour", label: "Golden Hour", desc: "rich warm sunset tones" },
+        { value: "overcast", label: "Soft Overcast", desc: "diffused even lighting" }
       ];
 
       const densityOptions = [
-        { value: 'minimal', label: 'Minimal', desc: 'clean minimal styling, few props' },
-        { value: 'moderate', label: 'Moderate', desc: 'balanced styling with some props' },
-        { value: 'abundant', label: 'Abundant', desc: 'rich layered scene, many cozy elements' }
+        { value: "minimal", label: "Minimal", desc: "clean minimal styling, few props" },
+        { value: "moderate", label: "Moderate", desc: "balanced styling with some props" },
+        { value: "abundant", label: "Abundant", desc: "rich layered scene, many cozy elements" }
       ];
 
       const foodOptions = [
-        { value: 'fruit-cheese', label: 'Fruit & Cheese', desc: 'grapes, berries, brie, crackers' },
-        { value: 'chocolate', label: 'Chocolate & Sweets', desc: 'truffles, cookies, chocolate, berries' },
-        { value: 'charcuterie', label: 'Charcuterie', desc: 'meats, olives, nuts, cheese' },
-        { value: 'mixed', label: 'Mixed Snacks', desc: 'variety of sweet and savory treats' }
+        { value: "fruit-cheese", label: "Fruit & Cheese", desc: "grapes, berries, brie, crackers" },
+        { value: "chocolate", label: "Chocolate & Sweets", desc: "truffles, cookies, chocolate, berries" },
+        { value: "charcuterie", label: "Charcuterie", desc: "meats, olives, nuts, cheese" },
+        { value: "mixed", label: "Mixed Snacks", desc: "variety of sweet and savory treats" }
       ];
 
       const buildFullPrompt = () => {
-        const lightingDesc = lightingOptions.find(o => o.value === options.lighting)?.desc || '';
-        const densityDesc = densityOptions.find(o => o.value === options.density)?.desc || '';
-        const foodDesc = foodOptions.find(o => o.value === options.foods)?.desc || '';
-
-        return `${basePrompt} Lighting: ${lightingDesc}. Styling: ${densityDesc}. Foods: ${foodDesc}.`;
+        const lightingDesc = lightingOptions.find(o => o.value === options.lighting)?.desc || "";
+        const densityDesc = densityOptions.find(o => o.value === options.density)?.desc || "";
+        const foodDesc = foodOptions.find(o => o.value === options.foods)?.desc || "";
+        return basePrompt + " Lighting: " + lightingDesc + ". Styling: " + densityDesc + ". Foods: " + foodDesc + ".";
       };
 
       const handleImageUpload = (e) => {
@@ -116,84 +105,105 @@
           reader.onload = (e) => setUploadedImage(e.target.result);
           reader.readAsDataURL(file);
           setGeneratedImage(null);
-          setError('');
+          setError("");
         }
       };
 
       const compositeImages = (plateDataUrl, backgroundUrl) => {
         return new Promise((resolve, reject) => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           const backgroundImg = new window.Image();
-          backgroundImg.crossOrigin = 'anonymous';
-          
+          backgroundImg.crossOrigin = "anonymous";
           backgroundImg.onload = () => {
             canvas.width = 1024;
             canvas.height = 1024;
-            
-            // Draw background
             ctx.drawImage(backgroundImg, 0, 0, 1024, 1024);
-            
-            // Draw plate on top
             const plateImg = new window.Image();
             plateImg.onload = () => {
-              // Center the plate and scale it appropriately
-              const plateSize = 600; // Adjust this for desired plate size
+              const plateSize = 600;
               const x = (1024 - plateSize) / 2;
               const y = (1024 - plateSize) / 2;
-              
               ctx.drawImage(plateImg, x, y, plateSize, plateSize);
-              
-              resolve(canvas.toDataURL('image/png'));
+              resolve(canvas.toDataURL("image/png"));
             };
-            plateImg.onerror = () => reject(new Error('Failed to load plate image'));
+            plateImg.onerror = () => reject(new Error("Failed to load plate image"));
             plateImg.src = plateDataUrl;
           };
-          
-          backgroundImg.onerror = () => reject(new Error('Failed to load background'));
+          backgroundImg.onerror = () => reject(new Error("Failed to load background"));
           backgroundImg.src = backgroundUrl;
         });
       };
 
-      const generateImage = async () => {
-        if (!uploadedImage) { 
-          setError('Please upload a plate image'); 
-          return; 
-        }
-
-        setLoading(true);
-        setError('');
-        setGeneratedImage(null);
-
-        try {
-          setLoadingStep('Removing background...');
+      const pollSceneGeneration = async (predictionId) => {
+        let attempts = 0;
+        while (attempts < 60) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          attempts++;
           const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              image: uploadedImage,
+              step: "checkScene",
+              predictionId: predictionId
+            })
+          });
+          const data = await response.json();
+          if (data.status === "succeeded") {
+            return data.backgroundImage;
+          } else if (data.status === "failed") {
+            throw new Error("Scene generation failed");
+          }
+          setLoadingStep("Generating scene... (" + (attempts * 2) + "s)");
+        }
+        throw new Error("Scene generation timed out");
+      };
+
+      const generateImage = async () => {
+        if (!uploadedImage) {
+          setError("Please upload a plate image");
+          return;
+        }
+        setLoading(true);
+        setError("");
+        setGeneratedImage(null);
+        try {
+          setLoadingStep("Removing background...");
+          const removeBgResponse = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              step: "removebg",
+              image: uploadedImage
+            })
+          });
+          if (!removeBgResponse.ok) {
+            const errData = await removeBgResponse.json();
+            throw new Error(errData.error || "Background removal failed");
+          }
+          const { plateImage } = await removeBgResponse.json();
+          setLoadingStep("Starting scene generation...");
+          const startSceneResponse = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              step: "startScene",
               prompt: buildFullPrompt()
             })
           });
-
-          if (!response.ok) {
-            const errData = await response.json().catch(() => ({}));
-            throw new Error(errData.error || `Generation failed: ${response.status}`);
+          if (!startSceneResponse.ok) {
+            const errData = await startSceneResponse.json();
+            throw new Error(errData.error || "Failed to start scene generation");
           }
-
-          const data = await response.json();
-          
-          setLoadingStep('Compositing images...');
-          
-          // Composite the plate onto the background
-          const finalImage = await compositeImages(data.plateImage, data.backgroundImage);
-          
+          const { predictionId } = await startSceneResponse.json();
+          const backgroundImage = await pollSceneGeneration(predictionId);
+          setLoadingStep("Compositing images...");
+          const finalImage = await compositeImages(plateImage, backgroundImage);
           setGeneratedImage(finalImage);
-          setLoadingStep('');
+          setLoadingStep("");
         } catch (err) {
-          setError(err.message || 'Failed to generate image');
-          setLoadingStep('');
+          setError(err.message || "Failed to generate image");
+          setLoadingStep("");
         } finally {
           setLoading(false);
         }
@@ -201,9 +211,9 @@
 
       const downloadImage = async () => {
         if (!generatedImage) return;
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = generatedImage;
-        link.download = `plate-styled-${Date.now()}.png`;
+        link.download = "plate-styled-" + Date.now() + ".png";
         link.click();
       };
 
@@ -214,15 +224,10 @@
               <h1 className="text-2xl font-semibold text-stone-800 mb-1">Plate Image Generator</h1>
               <p className="text-stone-500 text-sm">Upload your plate, customize the vibe, generate styled photos with your exact plate</p>
             </div>
-
             <div className="grid md:grid-cols-2 gap-4 mb-4">
-              {/* Upload */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-stone-200">
                 <label className="block text-xs font-medium text-stone-600 mb-2">Your Plate Photo</label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-stone-200 rounded-lg p-6 text-center cursor-pointer hover:border-amber-400 transition-colors"
-                >
+                <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-stone-200 rounded-lg p-6 text-center cursor-pointer hover:border-amber-400 transition-colors">
                   {uploadedImage ? (
                     <img src={uploadedImage} alt="Uploaded plate" className="max-h-48 mx-auto rounded" />
                   ) : (
@@ -234,16 +239,13 @@
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
               </div>
-
-              {/* Generated */}
               <div className="bg-white rounded-lg p-4 shadow-sm border border-stone-200">
                 <label className="block text-xs font-medium text-stone-600 mb-2">Generated Image</label>
                 <div className="border-2 border-stone-100 rounded-lg p-6 text-center bg-stone-50 min-h-[200px] flex items-center justify-center">
                   {loading ? (
                     <div className="text-amber-600">
                       <div className="w-8 h-8 mx-auto mb-2"><Loader2 /></div>
-                      <p className="text-sm font-medium">{loadingStep || 'Processing...'}</p>
-                      <p className="text-xs mt-1">This may take 30-60 seconds</p>
+                      <p className="text-sm font-medium">{loadingStep || "Processing..."}</p>
                     </div>
                   ) : generatedImage ? (
                     <img src={generatedImage} alt="Generated" className="max-h-48 mx-auto rounded" />
@@ -261,8 +263,6 @@
                 )}
               </div>
             </div>
-
-            {/* Quick Options */}
             <div className="bg-white rounded-lg p-4 mb-4 shadow-sm border border-stone-200">
               <div className="grid grid-cols-3 gap-4">
                 <div>
@@ -285,54 +285,36 @@
                 </div>
               </div>
             </div>
-
-            {/* Base Prompt */}
             <div className="bg-white rounded-lg p-4 mb-4 shadow-sm border border-stone-200">
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-medium text-stone-600">Base Prompt (auto-saves)</label>
                 <button onClick={() => setShowSettings(!showSettings)} className="text-xs text-amber-600 hover:text-amber-700 flex items-center gap-1">
-                  <div className="w-3 h-3"><Settings /></div> {showSettings ? 'Hide' : 'Edit'}
+                  <div className="w-3 h-3"><Settings /></div> {showSettings ? "Hide" : "Edit"}
                 </button>
               </div>
               {showSettings ? (
-                <textarea
-                  value={basePrompt}
-                  onChange={(e) => setBasePrompt(e.target.value)}
-                  rows={5}
-                  className="w-full px-3 py-2 text-sm border border-stone-200 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
+                <textarea value={basePrompt} onChange={(e) => setBasePrompt(e.target.value)} rows={5} className="w-full px-3 py-2 text-sm border border-stone-200 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" />
               ) : (
                 <p className="text-xs text-stone-500 line-clamp-2">{basePrompt}</p>
               )}
             </div>
-
-            {/* Error */}
             {error && (
               <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center justify-between">
                 {error}
-                <button onClick={() => setError('')}><div className="w-4 h-4"><X /></div></button>
+                <button onClick={() => setError("")}><div className="w-4 h-4"><X /></div></button>
               </div>
             )}
-
-            {/* Generate */}
-            <button
-              onClick={generateImage}
-              disabled={loading || !uploadedImage}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-stone-200 disabled:text-stone-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
-            >
+            <button onClick={generateImage} disabled={loading || !uploadedImage} className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-stone-200 disabled:text-stone-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
               <div className="w-4 h-4"><Sparkles /></div>
-              {loading ? loadingStep || 'Generating...' : 'Generate Styled Image'}
+              {loading ? loadingStep || "Generating..." : "Generate Styled Image"}
             </button>
-
-            <p className="text-xs text-stone-400 text-center mt-3">
-              Powered by Remove.bg + Replicate + Canvas compositing
-            </p>
+            <p className="text-xs text-stone-400 text-center mt-3">Powered by Remove.bg + Replicate + Canvas compositing</p>
           </div>
         </div>
       );
     }
 
-    ReactDOM.render(<PlateImageGenerator />, document.getElementById('root'));
+    ReactDOM.render(<PlateImageGenerator />, document.getElementById("root"));
   </script>
 </body>
 </html>
