@@ -32,8 +32,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         image_file_b64: base64Data,
-        size: 'auto',
-        format: 'png'
+        size: 'auto'
       })
     });
 
@@ -68,7 +67,8 @@ export default async function handler(req, res) {
     });
 
     if (!sceneResponse.ok) {
-      throw new Error('Scene generation failed');
+      const errorData = await sceneResponse.json();
+      throw new Error(`Scene generation failed: ${JSON.stringify(errorData)}`);
     }
 
     let scenePrediction = await sceneResponse.json();
@@ -92,7 +92,9 @@ export default async function handler(req, res) {
       throw new Error(scenePrediction.error || 'Scene generation failed');
     }
 
-    const sceneImageUrl = scenePrediction.output[0];
+    const sceneImageUrl = Array.isArray(scenePrediction.output) 
+      ? scenePrediction.output[0] 
+      : scenePrediction.output;
 
     // Return both the plate and background for client-side compositing
     return res.status(200).json({ 
@@ -101,6 +103,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error('Error:', error);
     return res.status(500).json({ error: error.message });
   }
 }
