@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Use Replicate's SDXL Inpainting model for image extension
+    // Use a lighter model: stable-diffusion with img2img
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -28,14 +28,14 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: "7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
+        version: "db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf", // SDXL img2img
         input: {
           image: image,
           prompt: prompt,
+          strength: 0.5,
           num_outputs: 1,
           guidance_scale: 7.5,
-          num_inference_steps: 30,
-          scheduler: "DPMSolverMultistep"
+          num_inference_steps: 25
         }
       })
     });
@@ -49,8 +49,10 @@ export default async function handler(req, res) {
     
     // Poll for completion
     let result = prediction;
-    while (result.status === 'starting' || result.status === 'processing') {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    let attempts = 0;
+    while ((result.status === 'starting' || result.status === 'processing') && attempts < 60) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      attempts++;
       
       const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
         headers: {
@@ -63,7 +65,7 @@ export default async function handler(req, res) {
 
     if (result.status === 'succeeded') {
       return res.status(200).json({ 
-        imageUrl: result.output[0] 
+        imageUrl: result.output && result.output.length > 0 ? result.output[0] : result.output
       });
     } else {
       throw new Error(result.error || 'Generation failed');
