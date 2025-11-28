@@ -12,63 +12,62 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { image, prompt, step } = req.body;
-  const apiKey = process.env.OPENAI_API_KEY;
+  const { image, prompt } = req.body;
+  const replicateToken = process.env.REPLICATE_API_TOKEN;
 
-  if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
+  if (!replicateToken) {
+    return res.status(500).json({ error: 'Replicate API token not configured' });
   }
 
   try {
-    // Step 1: Analyze plate with GPT-4 Vision
-    if (step === 'analyze') {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: 'Describe this ceramic plate in detail for image generation - focus on its shape, color, pattern, texture, and style. Be specific and concise, max 2 sentences.' },
-              { type: 'image_url', image_url: { url: image } }
-            ]
-          }],
-          max_tokens: 150
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || 'Vision API error');
-      return res.status(200).json({ description: data.choices[0]?.message?.content });
-    }
-
-    // Step 2: Generate image with DALL-E 3
-    if (step === 'generate') {
-      const response = await fetch('https://api.openai.com/v1/images/generations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'dall-e-3',
+    // Use Replicate's SDXL Inpainting model for image extension
+    const response = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${replicateToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: "7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
+        input: {
+          image: image,
           prompt: prompt,
-          n: 1,
-          size: '1024x1024',
-          quality: 'hd'
-        })
-      });
+          num_outputs: 1,
+          guidance_scale: 7.5,
+          num_inference_steps: 30,
+          scheduler: "DPMSolverMultistep"
+        }
+      })
+    });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || 'DALL-E API error');
-      return res.status(200).json({ imageUrl: data.data[0].url });
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.detail || `Replicate API error: ${response.status}`);
     }
 
-    return res.status(400).json({ error: 'Invalid step parameter' });
+    const prediction = await response.json();
+    
+    // Poll for completion
+    let result = prediction;
+    while (result.status === 'starting' || result.status === 'processing') {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: {
+          'Authorization': `Token ${replicateToken}`,
+        }
+      });
+      
+      result = await pollResponse.json();
+    }
+
+    if (result.status === 'succeeded') {
+      return res.status(200).json({ 
+        imageUrl: result.output[0] 
+      });
+    } else {
+      throw new Error(result.error || 'Generation failed');
+    }
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
