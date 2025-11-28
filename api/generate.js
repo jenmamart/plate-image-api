@@ -31,3 +31,29 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           image_file_b64: base64Data,
+          size: 'auto'
+        })
+      });
+
+      if (!removeBgResponse.ok) {
+        const errorText = await removeBgResponse.text();
+        throw new Error(`Background removal failed: ${errorText}`);
+      }
+
+      const plateNoBackground = await removeBgResponse.arrayBuffer();
+      const plateBase64 = 'data:image/png;base64,' + Buffer.from(plateNoBackground).toString('base64');
+
+      return res.status(200).json({ plateImage: plateBase64 });
+    }
+
+    if (step === 'startScene') {
+      const backgroundPrompt = 'Overhead view of a cozy winter table setting. Soft candlelight, warm tea mug, knit blanket draped over edge, scattered snacks like berries, chocolate, cheese. Empty space in center for a plate. Professional lifestyle photography, warm inviting lighting, shallow depth of field, Etsy aesthetic. No plate visible in the scene.';
+      
+      const sceneResponse = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Token ' + replicateToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: '39ed52f2a78e934b3ba6e2a89f5b1c7
