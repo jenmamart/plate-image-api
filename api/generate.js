@@ -81,10 +81,27 @@ export default async function handler(req, res) {
     }
 
     if (step === "checkScene") {
-      const pollResponse = await fetch("https://api.replicate.com/v1/predictions/" + predictionId, {
-        headers: {
-          "Authorization": "Token " + replicateToken,
-        }
+  const pollResponse = await fetch("https://api.replicate.com/v1/predictions/" + predictionId, {
+    headers: {
+      "Authorization": "Token " + replicateToken,
+    }
+  });
+
+  const prediction = await pollResponse.json();
+  
+  console.log("Prediction status:", prediction.status);
+  console.log("Full prediction:", JSON.stringify(prediction));
+  
+  if (prediction.status === "succeeded") {
+    const sceneImageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+    return res.status(200).json({ status: "succeeded", backgroundImage: sceneImageUrl });
+  } else if (prediction.status === "failed") {
+    console.log("Prediction failed:", prediction.error);
+    throw new Error(prediction.error || "Scene generation failed");
+  } else {
+    return res.status(200).json({ status: prediction.status });
+  }
+}
       });
 
       const prediction = await pollResponse.json();
